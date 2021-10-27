@@ -22,7 +22,7 @@ def get_calendar(calendar_url):
         summary = entry_to_info(e.name)
         result = ""
         if 'Study Activity' in summary:
-            result += summary['Study Activity'] + ' - '
+            result +=  re.sub(r"\.\s*[A-Z0-9]*", '', summary['Study Activity']) + ' - '
         if 'Activity' in summary:
             result += summary['Activity']
         e.name = result
@@ -32,8 +32,7 @@ def get_calendar(calendar_url):
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
-
     calendar_url = req.route_params.get('calendar_url') 
+    logging.info(f'Request for: {calendar_url}')
 
     return func.HttpResponse(str(get_calendar(calendar_url)))
