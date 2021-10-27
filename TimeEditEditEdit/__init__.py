@@ -14,18 +14,20 @@ def entry_to_info(val):
         result[key] = value
     return result
 
+ignored_activities = ["student educational activity", "study assistance"]
+
 def get_calendar(calendar_url):
     url = "https://cloud.timeedit.net/itu/web/public/" + calendar_url
     c = Calendar(requests.get(url).text)
 
     for e in c.events:
         summary = entry_to_info(e.name)
-        result = ""
+        result = []
         if 'Study Activity' in summary:
-            result +=  re.sub(r"\.\s*[A-Z0-9]*", '', summary['Study Activity']) + ' - '
-        if 'Activity' in summary:
-            result += summary['Activity']
-        e.name = result
+            result.append(re.sub(r"\.\s*[A-Z0-9]*", '', summary['Study Activity']))
+        if 'Activity' in summary and summary['Activity'].lower() not in ignored_activities:
+            result.append(summary['Activity'])
+        e.name = " - ".join(result)
         e.location = name.search(e.location)['value']
     
     return c
