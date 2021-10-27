@@ -30,7 +30,6 @@ def get_calendar(calendar_url):
     
     return c
 
-
 def main(req: func.HttpRequest) -> func.HttpResponse:
     calendar_url = req.route_params.get('calendar_url') 
     logging.info(f'Request for: {calendar_url}')
